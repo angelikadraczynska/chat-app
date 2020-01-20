@@ -9,15 +9,24 @@ const messageContentInput = document.getElementById('message-content');
 
 let userName = '';
 
-socket.on('message', ({ author, content }) => addMessage(author, content))
+socket.on('message', ({ author, content }) => addMessage(author, content));
+
+socket.on('join', user =>
+addMessage('ChatBot', `<i><b>${user}</b> logged in</i>`)
+);
+
+socket.on('leave', user =>
+addMessage('ChatBot', `<i><b>${user}</b> left the conversation</i>`)
+);
 
 function login() {
   if (userNameInput.value.length === 0) {
     window.alert('Enter your nickname');
   } else {
-    userName = userNameInput;
+    userName = userNameInput.value;
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
+    socket.emit('join', userName);
   }
 }
 
